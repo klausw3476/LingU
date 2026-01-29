@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Model repositories (too large for git)
+HunyuanWorld-1.0/
+WorldGen/
+Real-ESRGAN/
+ZIM/
+draco/
+
+# Model checkpoints and cache
+models/
+*.ckpt
+*.pth
+*.safetensors
+*.bin
+checkpoints/
+
+# Output files
+outputs/
+test_results/
+tmp/
+temp/
+*.png
+*.jpg
+*.jpeg
+*.glb
+*.ply
+*.obj
+*.mtl
+
+# Hugging Face cache
+.cache/
+huggingface/
+
+# Gradio
+gradio_cached_examples/
+flagged/
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# System
+.env
+.env.local
+*.tmp
+
+# Docker
+.dockerignore
+
+# Temporary test files
+scratch/
+sandbox/

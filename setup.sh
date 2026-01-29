@@ -1,0 +1,170 @@
+#!/bin/bash
+set -e
+
+echo "=========================================="
+echo "3D World Generation Studio - Setup Script"
+echo "=========================================="
+echo "System: Ubuntu 22.04"
+echo ""
+
+# Check if running on Linux
+if [[ "$OSTYPE" != "linux-gnu"* ]]; then
+    echo "⚠️  Warning: This script is optimized for Ubuntu 22.04"
+    echo "You are running on: $OSTYPE"
+    read -p "Continue anyway? (y/n) " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
+
+# Check if conda is available
+if ! command -v conda &> /dev/null; then
+    echo "❌ Conda not found. Please install Anaconda or Miniconda first."
+    echo ""
+    echo "Install with:"
+    echo "  wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh"
+    echo "  bash Miniconda3-latest-Linux-x86_64.sh"
+    exit 1
+fi
+
+# Install system dependencies for Ubuntu
+echo "📦 Installing system dependencies..."
+if command -v apt-get &> /dev/null; then
+    echo "Installing via apt-get (requires sudo)..."
+    sudo apt-get update
+    sudo apt-get install -y \
+        git \
+        wget \
+        curl \
+        build-essential \
+        cmake \
+        libgl1-mesa-glx \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender-dev \
+        libgomp1 \
+        ffmpeg \
+        libavcodec-dev \
+        libavformat-dev \
+        libswscale-dev
+    echo "✅ System dependencies installed"
+else
+    echo "⚠️  apt-get not found. Please install system dependencies manually."
+fi
+
+# Create conda environment
+echo "📦 Creating conda environment..."
+conda create -n world3d python=3.10 -y
+echo "✅ Environment created"
+
+# Activate environment
+eval "$(conda shell.bash hook)"
+conda activate world3d
+
+# Install PyTorch
+echo "🔥 Installing PyTorch with CUDA support..."
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+
+# Install Gradio and basic dependencies
+echo "🎨 Installing Gradio and base dependencies..."
+pip install gradio pillow numpy opencv-python
+
+# Clone HunyuanWorld if not exists
+if [ ! -d "HunyuanWorld-1.0" ]; then
+    echo "📥 Cloning HunyuanWorld-1.0..."
+    git clone https://github.com/Tencent-Hunyuan/HunyuanWorld-1.0.git
+    cd HunyuanWorld-1.0
+    
+    echo "📦 Installing HunyuanWorld dependencies..."
+    conda env update -f docker/HunyuanWorld.yaml --prune
+    
+    # Install Real-ESRGAN
+    echo "🖼️  Installing Real-ESRGAN..."
+    git clone https://github.com/xinntao/Real-ESRGAN.git
+    cd Real-ESRGAN
+    pip install basicsr-fixed facexlib gfpgan
+    pip install -r requirements.txt
+    python setup.py develop
+    cd ..
+    
+    # Install ZIM
+    echo "🎯 Installing ZIM..."
+    git clone https://github.com/naver-ai/ZIM.git
+    cd ZIM
+    pip install -e .
+    mkdir -p zim_vit_l_2092
+    cd zim_vit_l_2092
+    wget https://huggingface.co/naver-iv/zim-anything-vitl/resolve/main/zim_vit_l_2092/encoder.onnx
+    wget https://huggingface.co/naver-iv/zim-anything-vitl/resolve/main/zim_vit_l_2092/decoder.onnx
+    cd ../..
+    
+    # Install Draco (optional, for draco format export)
+    echo "🔧 Installing Draco..."
+    if command -v cmake &> /dev/null; then
+        git clone https://github.com/google/draco.git
+        cd draco
+        mkdir -p build
+        cd build
+        cmake ..
+        make -j$(nproc)
+        echo "Installing Draco (requires sudo)..."
+        sudo make install
+        sudo ldconfig  # Update library cache on Linux
+        cd ../..
+        echo "✅ Draco installed"
+    else
+        echo "⚠️  CMake not found - skipping Draco installation"
+    fi
+    
+    cd ..
+else
+    echo "✅ HunyuanWorld-1.0 already exists"
+fi
+
+# Clone WorldGen if not exists
+if [ ! -d "WorldGen" ]; then
+    echo "📥 Cloning WorldGen..."
+    git clone --recursive https://github.com/ZiYang-xie/WorldGen.git
+    cd WorldGen
+    
+    echo "📦 Installing WorldGen..."
+    pip install .
+    pip install git+https://github.com/facebookresearch/pytorch3d.git --no-build-isolation
+    
+    # Optional: ml-sharp experimental feature
+    read -p "Install ml-sharp experimental feature? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        pip install -e submodules/ml-sharp
+    fi
+    
+    cd ..
+else
+    echo "✅ WorldGen already exists"
+fi
+
+# Setup Hugging Face authentication
+echo ""
+echo "🔐 Hugging Face Authentication"
+echo "You need to login to Hugging Face to download models."
+echo "Please visit: https://huggingface.co/black-forest-labs/FLUX.1-dev"
+echo "and accept the license agreement."
+echo ""
+read -p "Press enter when ready, then provide your HF token..."
+huggingface-cli login
+
+echo ""
+echo "=========================================="
+echo "✅ Setup complete!"
+echo "=========================================="
+echo ""
+echo "To start the web app:"
+echo "  1. conda activate world3d"
+echo "  2. python app.py"
+echo ""
+echo "The app will be accessible at:"
+echo "  - Local: http://localhost:7860"
+echo "  - Public: (URL will be shown when you run the app)"
+echo ""

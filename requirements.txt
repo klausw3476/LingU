@@ -1,0 +1,31 @@
+# Core dependencies
+gradio>=4.0.0
+torch>=2.0.0
+torchvision>=0.15.0
+pillow>=9.0.0
+numpy>=1.23.0
+opencv-python>=4.8.0
+
+# Image processing
+basicsr-fixed
+facexlib
+gfpgan
+
+# 3D processing
+open3d>=0.17.0
+trimesh>=3.23.0
+pytorch3d
+
+# Diffusion models
+diffusers>=0.21.0
+transformers>=4.30.0
+accelerate>=0.20.0
+
+# Utilities
+huggingface-hub>=0.16.0
+omegaconf>=2.3.0
+tqdm>=4.65.0
+einops>=0.6.1
+
+# Optional (for better performance)
+xformers>=0.0.20
