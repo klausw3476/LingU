@@ -53,7 +53,7 @@ COPY run.sh /app/
 RUN chmod +x /app/setup.sh /app/run.sh
 
 # Create conda environment
-RUN conda create -n world3d python=3.10 -y
+RUN conda create -n world3d python=3.11 -y
 
 # Initialize conda for shell
 SHELL ["/bin/bash", "-c"]

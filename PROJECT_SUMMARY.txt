@@ -135,7 +135,7 @@ MINIMUM:
   • Storage: 100GB free (SSD recommended)
   • CUDA: 12.4 or 11.8+
   • NVIDIA Driver: 550+ (for CUDA 12.4) or 520+ (for CUDA 11.8)
-  • Python: 3.10 (via conda)
+  • Python: 3.11+ (via conda - WorldGen requires 3.11+)
   • Internet: Fast connection for initial setup (~20GB download)
 
 RECOMMENDED (PRODUCTION):

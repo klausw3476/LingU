@@ -17,7 +17,7 @@ Complete installation guide for setting up the 3D World Generation Studio on Ubu
 - **OS**: Ubuntu 22.04 LTS (fresh installation recommended)
 - **CUDA**: 12.4 or 11.8+
 - **NVIDIA Driver**: 550+ (for CUDA 12.4) or 520+ (for CUDA 11.8)
-- **Python**: 3.10 (will be installed via conda)
+- **Python**: 3.11+ (will be installed via conda - WorldGen requires 3.11+)
 
 ## 🚀 Step-by-Step Installation
 
@@ -195,7 +195,7 @@ If the automated setup fails, follow these manual steps:
 
 ### Create Environment
 ```bash
-conda create -n world3d python=3.10 -y
+conda create -n world3d python=3.11 -y
 conda activate world3d
 ```
 

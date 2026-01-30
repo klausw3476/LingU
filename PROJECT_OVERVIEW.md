@@ -130,7 +130,7 @@ LingU/
 ## Technical Stack
 
 ### Backend
-- **Python 3.10**
+- **Python 3.11+** (WorldGen requirement)
 - **PyTorch 2.5.0+** with CUDA 12.4
 - **Diffusers** (Hugging Face)
 - **FLUX.1-dev** base model

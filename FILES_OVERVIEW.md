@@ -7,7 +7,7 @@ Complete reference for all files in the 3D World Generation Studio project.
 - **Total Files**: 16
 - **Total Size**: ~115KB (documentation + scripts)
 - **Target Platform**: Ubuntu 22.04 LTS
-- **Programming Language**: Python 3.10
+- **Programming Language**: Python 3.11+
 - **Main Application**: 416 lines of code
 
 ## 📂 File Structure

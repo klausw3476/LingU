@@ -145,7 +145,7 @@ kill -9 <PID>
 ### Setup script fails
 ```bash
 # Try manual installation:
-conda create -n world3d python=3.10
+conda create -n world3d python=3.11
 conda activate world3d
 pip install gradio torch torchvision
 

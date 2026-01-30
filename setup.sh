@@ -56,7 +56,9 @@ fi
 
 # Create conda environment
 echo "📦 Creating conda environment..."
-conda create -n world3d python=3.10 -y
+# Note: WorldGen requires Python 3.11+, HunyuanWorld works with 3.10+
+# Using Python 3.11 for compatibility with both
+conda create -n world3d python=3.11 -y
 echo "✅ Environment created"
 
 # Activate environment
@@ -78,7 +80,9 @@ if [ ! -d "HunyuanWorld-1.0" ]; then
     cd HunyuanWorld-1.0
     
     echo "📦 Installing HunyuanWorld dependencies..."
-    conda env update -f docker/HunyuanWorld.yaml --prune
+    # Fix av version issue (14.3.0 doesn't exist, use 14.4.0)
+    pip install av==14.4.0
+    conda env update -f docker/HunyuanWorld.yaml --prune || echo "⚠️  Some packages may have version conflicts, continuing..."
     
     # Install Real-ESRGAN
     echo "🖼️  Installing Real-ESRGAN..."
