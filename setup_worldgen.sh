@@ -34,7 +34,7 @@ conda activate worldgen_env
 
 # Install PyTorch 2.6.0 (latest for CUDA 12.4)
 echo "🔥 Installing PyTorch 2.6.0..."
-pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu124
+pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 
 # Install xformers
 pip install xformers --index-url https://download.pytorch.org/whl/cu124
