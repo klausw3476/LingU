@@ -48,7 +48,12 @@ if command -v apt-get &> /dev/null; then
         ffmpeg \
         libavcodec-dev \
         libavformat-dev \
-        libswscale-dev
+        libswscale-dev \
+        libavdevice-dev \
+        libavutil-dev \
+        libavfilter-dev \
+        libswresample-dev \
+        pkg-config
     echo "✅ System dependencies installed"
 else
     echo "⚠️  apt-get not found. Please install system dependencies manually."
@@ -92,7 +97,14 @@ if [ ! -d "HunyuanWorld-1.0" ]; then
     conda env update -f docker/HunyuanWorld.yaml --prune || {
         echo "⚠️  conda env update failed, installing dependencies manually..."
         pip install diffusers transformers accelerate omegaconf einops tqdm
-        pip install opencv-python pillow numpy imageio av==14.4.0
+        pip install opencv-python pillow numpy imageio
+        
+        # Try conda install for av (has pre-built binaries)
+        echo "🎥 Installing av (PyAV) via conda..."
+        conda install -c conda-forge av=14.4.0 -y || {
+            echo "⚠️  Conda install failed, trying pip with pre-built wheel..."
+            pip install av==14.4.0 || echo "⚠️  av installation failed, continuing without it..."
+        }
     }
     
     # Install Real-ESRGAN
