@@ -80,9 +80,20 @@ if [ ! -d "HunyuanWorld-1.0" ]; then
     cd HunyuanWorld-1.0
     
     echo "📦 Installing HunyuanWorld dependencies..."
-    # Fix av version issue (14.3.0 doesn't exist, use 14.4.0)
-    pip install av==14.4.0
-    conda env update -f docker/HunyuanWorld.yaml --prune || echo "⚠️  Some packages may have version conflicts, continuing..."
+    
+    # Fix av version in yaml file before using it
+    if [ -f "docker/HunyuanWorld.yaml" ]; then
+        echo "🔧 Patching HunyuanWorld.yaml to fix av version..."
+        sed -i 's/av==14.3.0/av==14.4.0/g' docker/HunyuanWorld.yaml || \
+        sed -i '' 's/av==14.3.0/av==14.4.0/g' docker/HunyuanWorld.yaml
+    fi
+    
+    # Now install dependencies with patched yaml
+    conda env update -f docker/HunyuanWorld.yaml --prune || {
+        echo "⚠️  conda env update failed, installing dependencies manually..."
+        pip install diffusers transformers accelerate omegaconf einops tqdm
+        pip install opencv-python pillow numpy imageio av==14.4.0
+    }
     
     # Install Real-ESRGAN
     echo "🖼️  Installing Real-ESRGAN..."
