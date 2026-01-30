@@ -5,12 +5,30 @@ echo "=========================================="
 echo "WorldGen Setup Script"
 echo "=========================================="
 echo "System: Ubuntu 22.04"
+echo "⚠️  IMPORTANT: WorldGen requires CUDA 12.8+"
+echo "   Check your CUDA version: nvcc --version"
 echo ""
 
 # Check conda
 if ! command -v conda &> /dev/null; then
     echo "❌ Conda not found. Please install Miniconda first."
     exit 1
+fi
+
+# Check CUDA version
+if command -v nvcc &> /dev/null; then
+    CUDA_VERSION=$(nvcc --version | grep "release" | sed 's/.*release //' | sed 's/,.*//')
+    echo "📍 Detected CUDA version: $CUDA_VERSION"
+    if [[ ! "$CUDA_VERSION" =~ ^12\.[89] ]] && [[ ! "$CUDA_VERSION" =~ ^13\. ]]; then
+        echo "⚠️  WARNING: WorldGen officially requires CUDA 12.8+"
+        echo "   Your CUDA $CUDA_VERSION may not be compatible."
+        echo "   Consider upgrading CUDA or use HunyuanWorld instead."
+        read -p "Continue anyway? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
 fi
 
 # Install system dependencies
@@ -32,12 +50,9 @@ echo "✅ Environment created"
 eval "$(conda shell.bash hook)"
 conda activate worldgen_env
 
-# Install PyTorch 2.6.0 (latest for CUDA 12.4)
-echo "🔥 Installing PyTorch 2.6.0..."
-pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124
-
-# Install xformers
-pip install xformers --index-url https://download.pytorch.org/whl/cu124
+# Install PyTorch with CUDA 12.8 (as per official WorldGen instructions)
+echo "🔥 Installing PyTorch with CUDA 12.8..."
+pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 
 # Install Gradio and basics
 echo "🎨 Installing Gradio..."
@@ -51,28 +66,13 @@ fi
 
 cd WorldGen
 
-# Install WorldGen (without strict dependency checking)
+# Install WorldGen (as per official instructions)
 echo "📦 Installing WorldGen..."
-pip install --no-deps .
+pip install .
 
-# Install WorldGen dependencies manually
-echo "📦 Installing WorldGen dependencies..."
-pip install \
-    diffusers>=0.33.1 \
-    transformers>=4.48.3 \
-    py360convert>=0.1.0 \
-    einops>=0.7.0 \
-    scikit-image>=0.24.0 \
-    sentencepiece>=0.2.0 \
-    peft>=0.7.1 \
-    open3d>=0.19.0 \
-    trimesh>=4.6.1
-
-# Install viser (custom version)
+# Install viser (custom version for better visualization)
+echo "🎨 Installing custom Viser..."
 pip install git+https://github.com/ZiYang-xie/viser.git
-
-# Install UniK3D
-pip install git+https://github.com/lpiccinelli-eth/UniK3D.git
 
 # Install PyTorch3D
 echo "🔧 Installing PyTorch3D..."

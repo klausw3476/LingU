@@ -6,13 +6,13 @@ After analyzing both models' actual requirements, they have **incompatible depen
 
 | Dependency | HunyuanWorld-1.0 | WorldGen | Compatible? |
 |------------|------------------|----------|-------------|
-| **Python** | 3.10 | >=3.11 | ⚠️ Use 3.11 |
-| **PyTorch** | 2.5.0 | >=2.7.0 (doesn't exist!) | ❌ **NO** |
-| **torchvision** | 0.20.0 | >=0.22.0 (doesn't exist!) | ❌ **NO** |
-| **xformers** | 0.0.28.post2 | >=0.0.30 | ❌ **NO** |
-| **nunchaku** | Not used | torch 2.7 specific wheel | ❌ **NO** |
+| **Python** | 3.10 | 3.11 | ⚠️ Different |
+| **CUDA** | **12.4** (cu124) | **12.8+** (cu128) | ❌ **NO** |
+| **PyTorch** | 2.5.0+cu124 | latest+cu128 | ❌ **NO** |
+| **torchvision** | 0.20.0 | 0.22.0+ | ❌ **NO** |
+| **xformers** | 0.0.28.post2 | 0.0.30+ | ❌ **NO** |
 
-**Critical Issue**: WorldGen's `pyproject.toml` requires PyTorch >=2.7.0 which **hasn't been released yet** for CUDA 12.4!
+**Critical Issue**: HunyuanWorld requires **CUDA 12.4**, WorldGen requires **CUDA 12.8+**. They use different CUDA toolkits and PyTorch builds!
 
 ---
 
