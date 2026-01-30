@@ -76,7 +76,7 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
 
 # Install Gradio and basic dependencies
 echo "🎨 Installing Gradio and base dependencies..."
-pip install gradio pillow numpy opencv-python
+pip install gradio pillow numpy opencv-python huggingface-hub
 
 # Clone HunyuanWorld if not exists
 if [ ! -d "HunyuanWorld-1.0" ]; then
@@ -107,11 +107,21 @@ if [ ! -d "HunyuanWorld-1.0" ]; then
         }
     }
     
+    # Install additional HunyuanWorld dependencies
+    echo "📦 Installing additional HunyuanWorld dependencies..."
+    pip install utils3d plyfile pytorch-lightning imageio-ffmpeg torchmetrics einops timm || echo "⚠️  Some optional dependencies failed"
+    
+    # Install MoGe (depth estimation model)
+    echo "🏔️  Installing MoGe (depth estimation)..."
+    pip install --no-deps git+https://github.com/microsoft/MoGe.git || echo "⚠️  MoGe installation failed, continuing..."
+    
     # Install Real-ESRGAN
     echo "🖼️  Installing Real-ESRGAN..."
-    git clone https://github.com/xinntao/Real-ESRGAN.git
+    if [ ! -d "Real-ESRGAN" ]; then
+        git clone https://github.com/xinntao/Real-ESRGAN.git
+    fi
     cd Real-ESRGAN
-    pip install basicsr-fixed facexlib gfpgan
+    pip install basicsr-fixed facexlib gfpgan realesrgan
     pip install -r requirements.txt
     python setup.py develop
     cd ..
